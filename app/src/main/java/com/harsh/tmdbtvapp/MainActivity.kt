@@ -7,9 +7,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.harsh.tmdbtvapp.uii.home.HomeScreen
 import com.harsh.tmdbtvapp.movieViewModel.MovieViewModel
 import com.harsh.tmdbtvapp.navigation.NavRoutes
+import com.harsh.tmdbtvapp.uii.home.HomeScreen
+import com.harsh.tmdbtvapp.uii.home.detail.DetailScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -18,7 +19,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-
             val navController = rememberNavController()
 
             NavHost(
@@ -26,11 +26,27 @@ class MainActivity : ComponentActivity() {
                 startDestination = NavRoutes.HOME
             ) {
 
+                // HOME SCREEN
                 composable(NavRoutes.HOME) {
 
                     val movieVM: MovieViewModel = viewModel()
 
-                    HomeScreen(viewModel = movieVM)
+                    HomeScreen(
+                        viewModel = movieVM,
+                        navController = navController
+                    )
+                }
+
+                // DETAIL SCREEN
+                composable("${NavRoutes.DETAIL}/{id}") { backStackEntry ->
+
+                    val movieId =
+                        backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 0
+
+                    DetailScreen(
+                        movieId = movieId,
+                        navController = navController
+                    )
                 }
             }
         }

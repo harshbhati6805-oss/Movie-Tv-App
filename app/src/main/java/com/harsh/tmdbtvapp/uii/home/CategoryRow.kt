@@ -17,26 +17,32 @@ import com.harsh.tmdbtvapp.data.model.Movie
 @Composable
 fun CategoryRow(
     title: String,
-    movies: List<Movie>
+    movies: List<Movie>,
+    onMovieClick: (Int) -> Unit
 ) {
 
-    Column {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
 
         Text(
             text = title,
             color = Color.White,
             fontSize = 20.sp,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+               // .padding(16.dp)
+                .padding(start = 20.dp)
         )
 
         LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(movies) { index, movie ->
                 MovieItem(
                     movie = movie,
-                    isFirstItem = index == 0 && title == "Trending"
+                    isFirstItem = index == 0 && title == "Trending",
+                    onClick = onMovieClick
                 )
             }
         }

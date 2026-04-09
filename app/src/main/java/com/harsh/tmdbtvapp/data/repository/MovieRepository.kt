@@ -18,4 +18,10 @@ class MovieRepository {
 
     suspend fun getUpcoming() =
         api.getUpcoming(Constants.API_KEY).results
+
+    suspend fun getMovieDetails(id: Int) =
+        RetrofitInstance.api.getMovieDetails(id, Constants.API_KEY)
+
+    suspend fun getSimilarMovies(id: Int) =
+        RetrofitInstance.api.getSimilarMovies(id, Constants.API_KEY)
 }
