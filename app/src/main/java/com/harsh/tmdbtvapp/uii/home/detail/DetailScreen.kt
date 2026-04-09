@@ -29,6 +29,7 @@ import com.harsh.tmdbtvapp.uii.home.MovieItem
 import com.harsh.tmdbtvapp.uii.home.component.TvFocusableButton
 import com.harsh.tmdbtvapp.utils.Constants
 import androidx.compose.ui.input.key.*
+import com.harsh.tmdbtvapp.navigation.NavRoutes
 
 @Composable
 fun DetailScreen(
@@ -177,7 +178,10 @@ fun DetailScreen(
                 items(viewModel.relatedMovies) { movie ->
                     MovieItem(
                         movie = movie,
-                        isFirstItem = false
+                        isFirstItem = false,
+                        onClick = { movieId ->
+                            navController.navigate("${NavRoutes.DETAIL}/$movieId")
+                        }
                     )
                 }
             }
