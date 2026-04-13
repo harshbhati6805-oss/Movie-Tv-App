@@ -67,7 +67,7 @@ fun HomeScreen(
                     movies = viewModel.trending,
                     downFocus = topRatedFocus,
                     modifier = Modifier
-                        .focusRequester(trendingFocus)
+                        .focusRequester(trendingFocus),
                     onMovieClick = { movieId ->
                         navController.navigate("${NavRoutes.DETAIL}/$movieId")
 
@@ -110,10 +110,7 @@ fun HomeScreen(
                     title = "Upcoming",
                     movies = viewModel.upcoming,
                     modifier = Modifier
-                        .focusRequester(upcomingFocus)
-                        .focusProperties {
-                            up = popularFocus
-                        },
+                        .focusRequester(upcomingFocus),
                     onMovieClick = { movieId ->
                         navController.navigate("${NavRoutes.DETAIL}/$movieId")
                     }

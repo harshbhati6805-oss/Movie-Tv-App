@@ -38,13 +38,6 @@ fun MovieItem(
 ) {
 
     var isFocused by remember { mutableStateOf(false) }
-    val focusRequester = remember { FocusRequester() }
-
-    LaunchedEffect(Unit) {
-        if (isFirstItem && !isPreview) {
-            focusRequester.requestFocus()
-        }
-    }
 
     Box(
         modifier = Modifier
@@ -53,14 +46,18 @@ fun MovieItem(
                 scaleX = if (isFocused) 1.05f else 1f
                 scaleY = if (isFocused) 1.05f else 1f
             }
-            .focusRequester(focusRequester)
+
             .onFocusChanged { isFocused = it.isFocused }
             .then(
                 if (!isPreview) {
                     Modifier
                         .focusProperties {
-                            up = upFocus ?: FocusRequester.Default
-                            down = downFocus ?: FocusRequester.Default
+
+                            if (isFirstItem) {
+                                up = upFocus ?: FocusRequester.Default
+                                down = downFocus ?: FocusRequester.Default
+                            }
+
                         }
                         .focusable()
                 } else Modifier

@@ -48,7 +48,7 @@ fun CategoryRow(
             itemsIndexed(movies) { index, movie ->
                 MovieItem(
                     movie = movie,
-                    isFirstItem = index == 0 && title == "Trending",
+                    isFirstItem = index == 0,
                     upFocus = upFocus,
                     downFocus = downFocus,
                     onClick = onMovieClick
