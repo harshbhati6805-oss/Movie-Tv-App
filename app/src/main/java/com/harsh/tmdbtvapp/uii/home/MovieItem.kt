@@ -59,7 +59,7 @@ fun MovieItem(
                         .focusRequester(focusRequester)
                         .focusProperties {
 
-                            if (isFirstItem) {+
+                            if (isFirstItem) {
                                 up = upFocus ?: FocusRequester.Default
                                 down = downFocus ?: FocusRequester.Default
                             }
