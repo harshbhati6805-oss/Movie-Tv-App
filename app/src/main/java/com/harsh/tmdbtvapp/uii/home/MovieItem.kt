@@ -30,7 +30,7 @@ fun MovieItem(
     isPreview: Boolean = false,
     upFocus: FocusRequester? = null,
     downFocus: FocusRequester? = null,
-    lastClickedMovieId: Int? = null,
+    shouldRestoreFocus: Boolean = false,
     onClick: (Int) -> Unit = {}
 ) {
 
@@ -38,8 +38,8 @@ fun MovieItem(
     val focusRequester = remember { FocusRequester() }
 
     // ── Restore focus to this exact movie ──────────── ADD THIS
-    LaunchedEffect(lastClickedMovieId) {
-        if (movie.id == lastClickedMovieId) {
+    LaunchedEffect(shouldRestoreFocus) {
+        if (shouldRestoreFocus) {
             focusRequester.requestFocus()
         }
     }
@@ -59,7 +59,7 @@ fun MovieItem(
                         .focusRequester(focusRequester)
                         .focusProperties {
 
-                            if (isFirstItem) {
+                            if (isFirstItem) {+
                                 up = upFocus ?: FocusRequester.Default
                                 down = downFocus ?: FocusRequester.Default
                             }

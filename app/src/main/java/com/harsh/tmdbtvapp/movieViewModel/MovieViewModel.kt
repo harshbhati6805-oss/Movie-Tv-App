@@ -12,7 +12,7 @@ class MovieViewModel : ViewModel() {
 
     private val repository = MovieRepository()
 
-    var lastClickedMovieId by mutableStateOf<Int?>(null)
+    var lastClickedPosition by mutableStateOf<Pair<Int, Int>?>(null)
 
     var categories by mutableStateOf<Map<String, List<Movie>>>(emptyMap())
         private set

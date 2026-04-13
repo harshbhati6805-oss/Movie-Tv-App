@@ -36,8 +36,6 @@ fun HomeScreen(
 
     val categories = viewModel.categories.entries.toList()
 
-    // ── Save last clicked position ──
-    val lastClickedMovieId = viewModel.lastClickedMovieId
 
 
     if (isLoading) {
@@ -74,9 +72,11 @@ fun HomeScreen(
                     upFocus = focusRequesters.getOrNull(index - 1),
                     downFocus = focusRequesters.getOrNull(index + 1),
                     modifier = Modifier.focusRequester(focusRequesters[index]),
-                    lastClickedMovieId = lastClickedMovieId,
-                    onMovieClick = { movieId ->
-                        viewModel.lastClickedMovieId = movieId
+                    rowIndex = index,
+                    lastClickedRowIndex = viewModel.lastClickedPosition?.first,
+                    lastClickedColIndex = viewModel.lastClickedPosition?.second,
+                    onMovieClick = { colIndex, movieId ->
+                        viewModel.lastClickedPosition = Pair(index, colIndex)
                         navController.navigate("${NavRoutes.DETAIL}/$movieId")
                     }
                 )

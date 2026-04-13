@@ -24,8 +24,10 @@ fun CategoryRow(
     modifier: Modifier = Modifier,
     upFocus: FocusRequester? = null,
     downFocus: FocusRequester? = null,
-    lastClickedMovieId: Int? = null,
-    onMovieClick: (Int) -> Unit
+    rowIndex: Int = 0,
+    lastClickedRowIndex: Int? = null,
+    lastClickedColIndex: Int? = null,
+    onMovieClick: (colIndex: Int, movieId: Int) -> Unit
 ) {
 
     Column(
@@ -56,8 +58,8 @@ fun CategoryRow(
                     isFirstItem = index == 0,
                     upFocus = upFocus,
                     downFocus = downFocus,
-                    lastClickedMovieId = lastClickedMovieId,
-                    onClick = onMovieClick
+                    shouldRestoreFocus = rowIndex == lastClickedRowIndex && index == lastClickedColIndex,
+                    onClick = { movieId -> onMovieClick(index, movieId) }
                 )
             }
         }
