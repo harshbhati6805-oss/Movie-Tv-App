@@ -12,6 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +35,10 @@ fun HomeScreen(
     val focusRequesters = remember { List(4) { FocusRequester() } }
 
     val categories = viewModel.categories.entries.toList()
+
+    // ── Save last clicked position ──
+    val lastClickedMovieId = viewModel.lastClickedMovieId
+
 
     if (isLoading) {
 
@@ -66,7 +74,9 @@ fun HomeScreen(
                     upFocus = focusRequesters.getOrNull(index - 1),
                     downFocus = focusRequesters.getOrNull(index + 1),
                     modifier = Modifier.focusRequester(focusRequesters[index]),
+                    lastClickedMovieId = lastClickedMovieId,
                     onMovieClick = { movieId ->
+                        viewModel.lastClickedMovieId = movieId
                         navController.navigate("${NavRoutes.DETAIL}/$movieId")
                     }
                 )

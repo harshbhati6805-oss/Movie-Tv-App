@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -29,10 +30,19 @@ fun MovieItem(
     isPreview: Boolean = false,
     upFocus: FocusRequester? = null,
     downFocus: FocusRequester? = null,
+    lastClickedMovieId: Int? = null,
     onClick: (Int) -> Unit = {}
 ) {
 
     var isFocused by remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
+
+    // ── Restore focus to this exact movie ──────────── ADD THIS
+    LaunchedEffect(lastClickedMovieId) {
+        if (movie.id == lastClickedMovieId) {
+            focusRequester.requestFocus()
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -46,6 +56,7 @@ fun MovieItem(
             .then(
                 if (!isPreview) {
                     Modifier
+                        .focusRequester(focusRequester)
                         .focusProperties {
 
                             if (isFirstItem) {
