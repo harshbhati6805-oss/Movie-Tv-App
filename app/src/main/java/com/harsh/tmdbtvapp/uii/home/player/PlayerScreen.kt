@@ -1,5 +1,6 @@
 package com.harsh.tmdbtvapp.uii.home.player
 
+import com.harsh.tmdbtvapp.R
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -22,25 +23,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.Text
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import android.view.KeyEvent as AndroidKeyEvent
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FastForward
-import androidx.compose.material.icons.filled.FastRewind
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
-
+import androidx.compose.ui.res.painterResource
+import androidx.media3.common.Player
 import kotlinx.coroutines.delay
-import kotlin.coroutines.ContinuationInterceptor
+
 
 // Netflix Yellow & Dim colors
 private val NetflixYellow = Color(0xFFFFC107)
@@ -61,13 +59,15 @@ fun PlayerScreen(
 
     val player = remember { ExoPlayer.Builder(context).build() }
 
-    var isPlaying       by remember { mutableStateOf(true) }
+    var isPlaying by remember { mutableStateOf(true) }
     var currentPosition by remember { mutableStateOf(0L) }
-    var duration        by remember { mutableStateOf(1L) }
+    var duration by remember { mutableStateOf(1L) }
+
+    var isBuffering by remember { mutableStateOf(true) }
 
     // Focus requesters
-    val playFocusRequester    = remember { FocusRequester() }
-    val rewindFocusRequester  = remember { FocusRequester() }
+    val playFocusRequester = remember { FocusRequester() }
+    val rewindFocusRequester = remember { FocusRequester() }
     val forwardFocusRequester = remember { FocusRequester() }
 
     // Auto-focus Play button on launch
@@ -88,6 +88,15 @@ fun PlayerScreen(
             duration = if (player.duration > 0) player.duration else 1L
             delay(500)
         }
+    }
+
+    //making buffering ture when exoPLayer is buffering
+    LaunchedEffect(player) {
+        player.addListener(object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                isBuffering = playbackState == Player.STATE_BUFFERING
+            }
+        })
     }
 
     DisposableEffect(Unit) {
@@ -111,11 +120,20 @@ fun PlayerScreen(
             modifier = Modifier.fillMaxSize()
         )
 
+        if (isBuffering) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
+                .size(64.dp),
+                color = NetflixYellow,
+                strokeWidth = 5.dp
+            )
+        }
+
         // ── TITLE ──────────────────────────────────────────────
         Text(
             text = movieTitle,
             color = Color.White,
-            fontSize = 18.sp,
+            fontSize = 24.sp,
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(start = 24.dp, top = 24.dp)
@@ -126,7 +144,7 @@ fun PlayerScreen(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .background(Color.Black.copy(alpha = 0.5f))
+                // .background(Color.Black.copy(alpha = 0.5f))
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
 
@@ -136,7 +154,8 @@ fun PlayerScreen(
 
             val thumbSize = 18.dp
             val trackHeight = if (isProgressFocused) 6.dp else 4.dp
-            val thumbFraction = if (duration > 0) currentPosition.toFloat() / duration.toFloat() else 0f
+            val thumbFraction =
+                if (duration > 0) currentPosition.toFloat() / duration.toFloat() else 0f
             val progressColor = if (isProgressFocused) NetflixYellow else Color.White
 
             Box(
@@ -153,10 +172,12 @@ fun PlayerScreen(
                                     player.seekTo(currentPosition + 10_000)
                                     true
                                 }
+
                                 AndroidKeyEvent.KEYCODE_DPAD_LEFT -> {
                                     player.seekTo(currentPosition - 10_000)
                                     true
                                 }
+
                                 else -> false
                             }
                         } else false
@@ -195,7 +216,10 @@ fun PlayerScreen(
                             .size(thumbSize)
                             .clip(CircleShape)
                             .background(progressColor)
-                            .border(2.dp, Color.White, CircleShape)
+                            .then(
+                                if (isProgressFocused) Modifier.border(2.dp, NetflixYellow, CircleShape)
+                                else Modifier
+                            )
                     )
                 }
             }
@@ -206,7 +230,7 @@ fun PlayerScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(formatTime(currentPosition), color = Color.White, fontSize = 13.sp)
-                Text(formatTime(duration),        color = Color.White, fontSize = 13.sp)
+                Text(formatTime(duration), color = Color.White, fontSize = 13.sp)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -222,56 +246,57 @@ fun PlayerScreen(
                 NetflixIconButton(
                     focusRequester = rewindFocusRequester,
                     size = 44,
-                    onClick = { player.seekBack() }
+                    onClick = { player.seekTo(currentPosition - 10_000) }
                 ) { isFocused ->
+
                     Icon(
-                        Icons.Default.FastRewind,
+                        painter = painterResource(id = R.drawable.ic_rewind_10),
                         contentDescription = "Rewind",
                         tint = if (isFocused) Color.Black else Color.White,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier.size(26.dp)
                     )
                 }
 
-                Spacer(modifier = Modifier.width(28.dp))
+            Spacer(modifier = Modifier.width(28.dp))
 
-                // PLAY / PAUSE  (bigger circle)
-                NetflixIconButton(
-                    focusRequester = playFocusRequester,
-                    size = 56,
-                    onClick = {
-                        isPlaying = !isPlaying
-                        player.playWhenReady = isPlaying
-                    }
-                ) { isFocused ->
-                    Icon(
-                        imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                        contentDescription = if (isPlaying) "Pause" else "Play",
-                        tint = if (isFocused) Color.Black else Color.White,
-                        modifier = Modifier.size(28.dp)
-                    )
+            // PLAY / PAUSE  (bigger circle)
+            NetflixIconButton(
+                focusRequester = playFocusRequester,
+                size = 56,
+                onClick = {
+                    isPlaying = !isPlaying
+                    player.playWhenReady = isPlaying
                 }
-
-                Spacer(modifier = Modifier.width(28.dp))
-
-                // FORWARD
-                NetflixIconButton(
-                    focusRequester = forwardFocusRequester,
-                    size = 44,
-                    onClick = { player.seekForward() }
-                ) { isFocused ->
-                    Icon(
-                        Icons.Default.FastForward,
-                        contentDescription = "Forward",
-                        tint = if (isFocused) Color.Black else Color.White,
-                        modifier = Modifier.size(22.dp)
-                    )
-                }
+            ) { isFocused ->
+                Icon(
+                    imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    contentDescription = null,
+                    tint = if (isFocused) Color.Black else Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.width(28.dp))
+
+            // FORWARD
+            NetflixIconButton(
+                focusRequester = forwardFocusRequester,
+                size = 44,
+                onClick = { player.seekTo(currentPosition + 10_000) }
+            ) { isFocused ->
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_forward_10),
+                    contentDescription = "Forward",
+                    tint = if (isFocused) Color.Black else Color.White,
+                    modifier = Modifier.size(26.dp)
+                )
+            }
+            }
         }
     }
 }
+
 
 // ── REUSABLE NETFLIX-STYLE CIRCLE BUTTON ───────────────────────────
 @Composable
