@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -31,6 +32,8 @@ fun MovieItem(
     movie: Movie,
     isFirstItem: Boolean = false,
     isPreview: Boolean = false,
+    upFocus: FocusRequester? = null,
+    downFocus: FocusRequester? = null,
     onClick: (Int) -> Unit = {}
 ) {
 
@@ -53,7 +56,14 @@ fun MovieItem(
             .focusRequester(focusRequester)
             .onFocusChanged { isFocused = it.isFocused }
             .then(
-                if (!isPreview) Modifier.focusable() else Modifier
+                if (!isPreview) {
+                    Modifier
+                        .focusProperties {
+                            up = upFocus ?: FocusRequester.Default
+                            down = downFocus ?: FocusRequester.Default
+                        }
+                        .focusable()
+                } else Modifier
             )
             .onKeyEvent { event ->
                 if (event.type == KeyEventType.KeyDown &&

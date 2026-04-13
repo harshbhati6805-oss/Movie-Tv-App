@@ -12,6 +12,10 @@ runtime = "1.10.6"
 foundation = "1.10.6"
 uiText = "1.10.6"
 ui = "1.10.6"
+benchmarkTraceprocessor = "1.4.1"
+material3 = "1.4.0"
+material = "1.13.0"
+composeMaterial3 = "1.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,6 +36,10 @@ androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 androidx-compose-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiText" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
+androidx-benchmark-traceprocessor = { group = "androidx.benchmark", name = "benchmark-traceprocessor", version.ref = "benchmarkTraceprocessor" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+compose-material3 = { group = "androidx.wear.compose", name = "compose-material3", version.ref = "composeMaterial3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

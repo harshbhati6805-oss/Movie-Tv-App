@@ -2,7 +2,6 @@ package com.harsh.tmdbtvapp.uii.home.detail
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -13,10 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.onPreviewKeyEvent
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -28,7 +23,6 @@ import com.harsh.tmdbtvapp.movieViewModel.DetailViewModel
 import com.harsh.tmdbtvapp.uii.home.MovieItem
 import com.harsh.tmdbtvapp.uii.home.component.TvFocusableButton
 import com.harsh.tmdbtvapp.utils.Constants
-import androidx.compose.ui.input.key.*
 import com.harsh.tmdbtvapp.navigation.NavRoutes
 
 @Composable
@@ -138,15 +132,29 @@ fun DetailScreen(
             ) {
 
                 TvFocusableButton(
-                    text = "Watch Movie",
+                    text = "Watch Now",
                     isDefaultFocused = true,
                     focusRequester = focusRequester,
-                    onClick = { }
+                    onClick = {
+                        val movieUrl = "https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4"
+                        val movieTitle = movie?.title ?: "Movie"
+
+                        navController.navigate(
+                            "player?url=$movieUrl&title=$movieTitle"
+                        )
+                    }
                 )
 
                 TvFocusableButton(
                     text = "Play Trailer",
-                    onClick = { }
+                    onClick = {
+                        val trailerUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+                        val movieTitle = movie?.title ?: "Movie"
+
+                        navController.navigate(
+                            "player?url=$trailerUrl&title=$movieTitle"
+                        )
+                    }
                 )
             }
 

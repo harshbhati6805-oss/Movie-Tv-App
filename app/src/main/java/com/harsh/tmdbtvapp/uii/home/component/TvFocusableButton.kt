@@ -15,6 +15,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.*
 
 @Composable
 fun TvFocusableButton(
@@ -36,7 +37,17 @@ fun TvFocusableButton(
             .onFocusChanged {
                 isFocused = it.isFocused
             }
-            .focusable(),
+            .focusable()
+            .onPreviewKeyEvent { event ->   // 🔥 FIX ADDED
+                if (event.type == KeyEventType.KeyDown &&
+                    (event.key == Key.DirectionCenter || event.key == Key.Enter)
+                ) {
+                    onClick()
+                    true
+                } else {
+                    false
+                }
+            },
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isFocused) Color.White else Color.DarkGray,
             contentColor = if (isFocused) Color.Black else Color.White

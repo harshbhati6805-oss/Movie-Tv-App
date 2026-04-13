@@ -11,6 +11,7 @@ import com.harsh.tmdbtvapp.movieViewModel.MovieViewModel
 import com.harsh.tmdbtvapp.navigation.NavRoutes
 import com.harsh.tmdbtvapp.uii.home.HomeScreen
 import com.harsh.tmdbtvapp.uii.home.detail.DetailScreen
+import com.harsh.tmdbtvapp.uii.home.player.PlayerScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -45,6 +46,32 @@ class MainActivity : ComponentActivity() {
 
                     DetailScreen(
                         movieId = movieId,
+                        navController = navController
+                    )
+                }
+
+                // 🎥 PLAYER (👉 ADD THIS HERE)
+                composable("player?url={url}&title={title}") { backStackEntry ->
+
+                    val url = backStackEntry.arguments?.getString("url") ?: ""
+                    val title = backStackEntry.arguments?.getString("title") ?: ""
+
+                    PlayerScreen(
+                        videoUrl = url,
+                        movieTitle = title,
+                        navController = navController
+                    )
+                }
+
+                // PLAYER SCREEN
+                composable("player?url={url}&title={title}") { backStackEntry ->
+
+                    val url = backStackEntry.arguments?.getString("url") ?: ""
+                    val title = backStackEntry.arguments?.getString("title") ?: ""
+
+                    PlayerScreen(
+                        videoUrl = url,
+                        movieTitle = title,
                         navController = navController
                     )
                 }

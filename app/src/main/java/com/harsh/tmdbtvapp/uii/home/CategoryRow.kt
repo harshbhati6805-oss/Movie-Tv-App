@@ -1,5 +1,6 @@
 package com.harsh.tmdbtvapp.uii.home
 
+import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,6 +10,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,10 +20,14 @@ import com.harsh.tmdbtvapp.data.model.Movie
 fun CategoryRow(
     title: String,
     movies: List<Movie>,
+    modifier: Modifier = Modifier,
+    upFocus: FocusRequester? = null,
+    downFocus: FocusRequester? = null,
     onMovieClick: (Int) -> Unit
 ) {
 
     Column(
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
 
@@ -35,6 +41,7 @@ fun CategoryRow(
         )
 
         LazyRow(
+            modifier = Modifier.focusGroup(),
             contentPadding = PaddingValues(horizontal = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -42,6 +49,8 @@ fun CategoryRow(
                 MovieItem(
                     movie = movie,
                     isFirstItem = index == 0 && title == "Trending",
+                    upFocus = upFocus,
+                    downFocus = downFocus,
                     onClick = onMovieClick
                 )
             }
