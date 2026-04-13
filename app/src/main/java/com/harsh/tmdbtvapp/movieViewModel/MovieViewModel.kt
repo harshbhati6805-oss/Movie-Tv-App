@@ -12,16 +12,7 @@ class MovieViewModel : ViewModel() {
 
     private val repository = MovieRepository()
 
-    var trending by mutableStateOf<List<Movie>>(emptyList())
-        private set
-
-    var topRated by mutableStateOf<List<Movie>>(emptyList())
-        private set
-
-    var popular by mutableStateOf<List<Movie>>(emptyList())
-        private set
-
-    var upcoming by mutableStateOf<List<Movie>>(emptyList())
+    var categories by mutableStateOf<Map<String, List<Movie>>>(emptyMap())
         private set
 
     var isLoading by mutableStateOf(true)
@@ -36,15 +27,16 @@ class MovieViewModel : ViewModel() {
             try {
                 isLoading = true
 
-                val trendingDeferred = async { repository.getTrending() }
-                val topRatedDeferred = async { repository.getTopRated() }
-                val popularDeferred = async { repository.getPopular() }
-                val upcomingDeferred = async { repository.getUpcoming() }
+                val fetchers = listOf(
+                    "Trending" to async { repository.getTrending() },
+                    "Top Rated" to async { repository.getTopRated() },
+                    "Popular" to async { repository.getPopular() },
+                    "Upcoming" to async { repository.getUpcoming() },
+                )
 
-                trending = trendingDeferred.await()
-                topRated = topRatedDeferred.await()
-                popular = popularDeferred.await()
-                upcoming = upcomingDeferred.await()
+                categories = fetchers.associate { (title, deferred) ->
+                    title to deferred.await()
+                }
 
             } catch (e: Exception) {
                 e.printStackTrace()

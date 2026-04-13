@@ -28,10 +28,9 @@ fun HomeScreen(
 
     val isLoading = viewModel.isLoading
 
-    val trendingFocus = remember { FocusRequester() }
-    val topRatedFocus = remember { FocusRequester() }
-    val popularFocus = remember { FocusRequester() }
-    val upcomingFocus = remember { FocusRequester() }
+    val focusRequesters = remember { List(4) { FocusRequester() } }
+
+    val categories = viewModel.categories.entries.toList()
 
     if (isLoading) {
 
@@ -58,56 +57,15 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
-            item {
-                CategoryRow(
-                    title = "Trending",
-                    movies = viewModel.trending,
-                    downFocus = topRatedFocus,
-                    modifier = Modifier
-                        .focusRequester(trendingFocus),
-                    onMovieClick = { movieId ->
-                        navController.navigate("${NavRoutes.DETAIL}/$movieId")
+            items(categories.size) { index ->
+                val (title, movies) = categories[index]
 
-                    }
-                )
-            }
-
-            item {
                 CategoryRow(
-                    title = "Top Rated",
-                    movies = viewModel.topRated,
-                    upFocus = trendingFocus,
-                    downFocus = popularFocus,
-                    modifier = Modifier
-                        .focusRequester(topRatedFocus),
-                    onMovieClick = { movieId ->
-                        navController.navigate("${NavRoutes.DETAIL}/$movieId")
-                    }
-                )
-            }
-
-            item {
-                CategoryRow(
-                    title = "Popular",
-                    movies = viewModel.popular,
-                    modifier = Modifier
-                        .focusRequester(popularFocus)
-                        .focusProperties {
-                            up = topRatedFocus
-                            down = upcomingFocus
-                        },
-                    onMovieClick = { movieId ->
-                        navController.navigate("${NavRoutes.DETAIL}/$movieId")
-                    }
-                )
-            }
-
-            item {
-                CategoryRow(
-                    title = "Upcoming",
-                    movies = viewModel.upcoming,
-                    modifier = Modifier
-                        .focusRequester(upcomingFocus),
+                    title = title,
+                    movies = movies,
+                    upFocus = focusRequesters.getOrNull(index - 1),
+                    downFocus = focusRequesters.getOrNull(index + 1),
+                    modifier = Modifier.focusRequester(focusRequesters[index]),
                     onMovieClick = { movieId ->
                         navController.navigate("${NavRoutes.DETAIL}/$movieId")
                     }

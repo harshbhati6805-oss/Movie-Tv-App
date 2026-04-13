@@ -64,17 +64,17 @@ class MainActivity : ComponentActivity() {
                 }
 
                 // PLAYER SCREEN
-                composable("player?url={url}&title={title}") { backStackEntry ->
-
-                    val url = backStackEntry.arguments?.getString("url") ?: ""
-                    val title = backStackEntry.arguments?.getString("title") ?: ""
-
-                    PlayerScreen(
-                        videoUrl = url,
-                        movieTitle = title,
-                        navController = navController
-                    )
-                }
+//                composable("player?url={url}&title={title}") { backStackEntry ->
+//
+//                    val url = backStackEntry.arguments?.getString("url") ?: ""
+//                    val title = backStackEntry.arguments?.getString("title") ?: ""
+//
+//                    PlayerScreen(
+//                        videoUrl = url,
+//                        movieTitle = title,
+//                        navController = navController
+//                    )
+//                }
             }
         }
     }

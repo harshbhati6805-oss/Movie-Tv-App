@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +28,10 @@ fun CategoryRow(
 ) {
 
     Column(
-        modifier = modifier,
+        modifier = modifier.focusProperties {
+            upFocus?.let { up = it }
+            downFocus?.let { down = it }
+        },
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
 
